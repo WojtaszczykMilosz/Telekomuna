@@ -144,7 +144,8 @@ public class Hamming {
 
         int rozmiar = (wiadomosc.length - 1)/(8+H2.length) + 1;
         int[] wyj;
-        if(wiadomosc.length % (8+H2.length) != 0){
+        boolean nierownosc = wiadomosc.length % (8+H2.length) != 0;
+        if(nierownosc){
             rozmiar -= 1;
             wyj = new int[rozmiar*8 - wiadomosc[wiadomosc.length - 1]];
 
@@ -157,14 +158,15 @@ public class Hamming {
         for (int i = 0; i < rozmiar; i++){
             buffor = Arrays.copyOfRange(wiadomosc,i*(8+H2.length),(i+1)*(8+H2.length));
             buffor = napraw(buffor);
-            if (i != rozmiar - 1) {
-                for (int j = 0; j < buffor.length; j++)
+            if (!(i == rozmiar - 1 && nierownosc)) {
+                for (int j = 0; j < buffor.length-H2.length; j++)
                     wyj[x + j] = buffor[j];
-
             } else {
                 for (int j = 0; j < wiadomosc[wiadomosc.length-1]; j++)
                     wyj[x + j] = buffor[j];
             }
+
+
                 x+=8;
             }
 

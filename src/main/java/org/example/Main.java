@@ -36,15 +36,33 @@ public class Main {
 //            System.out.print(wynik2[i]);
 //        System.out.println();
 //
-        int[] plik = OperacjePlikowe.wczytajZpliku("test.txt");
-        int[] tab3 = Hamming.koduj(tab);
-        System.out.println();
-        for (int i = 0; i<tab3.length;i++)
-            System.out.print(tab3[i]);
-        System.out.println();
+        int[] plik = OperacjePlikowe.wczytajZpliku("doc.doc");
+        int[] tab3 = Hamming.koduj(plik);
         int[] tab4 = Hamming.dekoduj(tab3);
-        for (int i = 0; i<tab4.length;i++)
-            System.out.print(tab4[i]);
+        OperacjePlikowe.zapiszDoPliku("test.doc",tab4);
+        System.out.println();
+//        for (int i = 0; i<plik.length;i++)
+//            System.out.print(plik[i]);
+        System.out.println();
+
+        System.out.println(
+
+        );
+        System.out.println();
+
+
+
+        System.out.println(plik.length%8);
+        System.out.println(plik.length);
+        System.out.println(tab4.length);
+//        tab4 = Hamming.dekoduj(tab3);
+//        for (int i = 0; i<tab4.length;i++)
+//            System.out.print(tab4[i]);
+
+        System.out.println(
+
+        );
+
 //        System.out.println(new BigInteger(plik).toString(2));
 
 //        for (int a:plik)
