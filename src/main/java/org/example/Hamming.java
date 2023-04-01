@@ -178,8 +178,6 @@ public class Hamming {
             for (int j = i+1; j < H[0].length; j++){
                 tab = XOR(col,getColumn(j));
                 if (Arrays.compare(tab,E) == 0) {
-                    System.out.println(i);
-                    System.out.println(j);
                     if(i < wyj.length) {
                         wyj[i] = wiadomosc[i] ^ 1;
                     }
@@ -244,9 +242,10 @@ public class Hamming {
         int x = 0;
         for (int i = 0; i < rozmiar; i++){
             buffor = Arrays.copyOfRange(wiadomosc,i*(8+H.length),(i+1)*(8+H.length));
-            buffor = napraw(buffor);
+            buffor = napraw2(buffor);
+
             if (!(i == rozmiar - 1 && nierownosc)) {
-                for (int j = 0; j < buffor.length-H.length; j++)
+                for (int j = 0; j < buffor.length; j++)
                     wyj[x + j] = buffor[j];
             } else {
                 for (int j = 0; j < wiadomosc[wiadomosc.length-1]; j++)

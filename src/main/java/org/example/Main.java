@@ -22,7 +22,7 @@ public class Main {
 //        }
 //        System.out.println();
 
-        Hamming.sprawdzPop(wej2,wej);
+//        Hamming.sprawdzPop(wej2,wej);
 //        for(int i =0;i<nowe.length;i++){
 //            System.out.print(nowe[i]);
 //        }
@@ -51,14 +51,14 @@ public class Main {
 //            System.out.print(wynik2[i]);
 //        System.out.println();
 //
-//        int[] plik = OperacjePlikowe.wczytajZpliku("doc.doc");
-//        int[] tab3 = Hamming.koduj(plik);
-//        int[] tab4 = Hamming.dekoduj(tab3);
-//        OperacjePlikowe.zapiszDoPliku("test.doc",tab4);
+        int[] plik = OperacjePlikowe.wczytajZpliku("doc.doc");
+        int[] tab3 = Hamming.koduj(plik);
+        int[] tab4 = Hamming.dekoduj(tab3);
+        OperacjePlikowe.zapiszDoPliku("test.doc",tab4);
 //        System.out.println();
-////        for (int i = 0; i<plik.length;i++)
-////            System.out.print(plik[i]);
-//        System.out.println();
+        for (int i = 0; i<plik.length;i++)
+            System.out.print(plik[i]);
+        System.out.println();
 //
 //        System.out.println(
 //
@@ -69,10 +69,10 @@ public class Main {
 //
 //        System.out.println(plik.length%8);
 //        System.out.println(plik.length);
-//        System.out.println(tab4.length);
-////        tab4 = Hamming.dekoduj(tab3);
-////        for (int i = 0; i<tab4.length;i++)
-////            System.out.print(tab4[i]);
+
+//        tab4 = Hamming.dekoduj(tab3);
+        for (int i = 0; i<tab4.length;i++)
+            System.out.print(tab4[i]);
 //
 //        System.out.println(
 //
