@@ -13,13 +13,35 @@ public class Hamming {
 
     private static final int[][] H = {
             {1, 1, 1, 1, 0, 0, 0, 0,     1, 0, 0, 0, 0, 0, 0, 0},
-            {1, 1, 0, 0, 1, 1, 0, 0,     0, 1, 1, 0, 0, 0, 0, 0},
+            {1, 1, 0, 0, 1, 1, 0, 0,     0, 1, 0, 0, 0, 0, 0, 0},
             {1, 0, 1, 0, 1, 0, 1, 0,     0, 0, 1, 0, 0, 0, 0, 0},
             {0, 1, 0, 1, 0, 1, 1, 0,     0, 0, 0, 1, 0, 0, 0, 0},
             {1, 1, 1, 0, 1, 0, 0, 1,     0, 0, 0, 0, 1, 0, 0, 0},
             {1, 0, 0, 1, 0, 1, 0, 1,     0, 0, 0, 0, 0, 1, 0, 0},
             {0, 1, 1, 1, 1, 0, 1, 1,     0, 0, 0, 0, 0, 0, 1, 0},
             {1, 1, 1, 0, 0, 1, 1, 1,     0, 0, 0, 0, 0, 0, 0, 1}};
+
+
+
+    public static void sprawdzPop(int[] pop, int[] nap){
+        for(int i =0;i<H[0].length;i++){
+            for(int j = 0;j<H[0].length;j++){
+                if( i != j){
+                    int[] wyn = Arrays.copyOf(nap,nap.length);
+                    wyn[i] = wyn[i] ^ 1;
+                    wyn[j] = wyn[j] ^ 1;
+
+
+                    if(Arrays.compare(pop,napraw2(wyn))!=0){
+                        System.out.println("BŁĄD");
+                        System.out.println(i);
+                        System.out.println(j);
+                        return;
+                    }
+                }
+            }
+        }
+    }
     public static void sprawdzH(){
         for (int i =0;i<H[0].length;i++){
             for (int j =0;j<H[0].length;j++){
@@ -144,12 +166,13 @@ public class Hamming {
             }
         }
         if (Arrays.compare(wyj,wej) != 0) {
+
             return wyj;
         }
 
         int[] tab;
 
-        for (int i = 0; i < H.length; i++) {
+        for (int i = 0; i < H[0].length; i++) {
             col = getColumn(i);
 
             for (int j = i+1; j < H[0].length; j++){
@@ -157,7 +180,9 @@ public class Hamming {
                 if (Arrays.compare(tab,E) == 0) {
                     System.out.println(i);
                     System.out.println(j);
-                    wyj[i] = wiadomosc[i] ^ 1;
+                    if(i < wyj.length) {
+                        wyj[i] = wiadomosc[i] ^ 1;
+                    }
                     if (j < wyj.length) {
                         wyj[j] = wiadomosc[j] ^ 1;
                     }

@@ -9,18 +9,27 @@ public class Main {
     
     public static void main(String[] args) {
         int[] tab = { 1,0,1,1,0,0,1,0, 0,1,1,0};
-        int[] wej= { 1,0,1,1,0,0,1,0};
-        int[] tab2 = {1,0,1,1,0,0,1,0, 1,1,1,0,0,0,1,1};
+        int[] wej2= {  1,0,1,1,0,0,1,0};
+        int[] wej= {  1,0,1,1,0,0,1,0, 1,1,1,0,0,0,1,1};
+        int[] tab2 = {0,1,1,1,0,0,1,0, 1,1,1,0,0,0,1,1};
         int[] wynik = Hamming.sprawdz(tab2);
         int[] nowe = Hamming.napraw2(tab2);
         int[] wynik2 = Hamming.koduj(wej);
 
 
+//        for(int i =0;i<16;i++){
+//            System.out.print(Hamming.koduj(wej2)[i]);
+//        }
+//        System.out.println();
 
-
+        Hamming.sprawdzPop(wej2,wej);
 //        for(int i =0;i<nowe.length;i++){
 //            System.out.print(nowe[i]);
 //        }
+//        System.out.println();
+
+
+
 
 //        for (int i = 0; i<tab.length;i++)
 //            System.out.print(tab[i]);
