@@ -130,14 +130,20 @@ public class Hamming {
         int[] E = sprawdz(wiadomosc);
         if (E == null) {
             return wiadomosc;
-        } else if (!Arrays.asList(E).contains(1)) {
-            return Arrays.copyOf(wiadomosc,H.length);
+        }
+        for(int i = 0;i<E.length;i++){
+            if (E[i] == 1){
+                break;
+            }
+            if(i == E.length - 1){
+                return Arrays.copyOf(wiadomosc,8);
+            }
         }
 
-        int[] wyj = Arrays.copyOf(wiadomosc,H.length);
-        int[] wej = Arrays.copyOf(wiadomosc,H.length);
+        int[] wyj = Arrays.copyOf(wiadomosc,8);
+        int[] wej = Arrays.copyOf(wiadomosc,8);
         int[] col;
-        for (int i = 0; i < H.length; i++) {
+        for (int i = 0; i < 8; i++) {
             col = getColumn(i);
             if (Arrays.compare(col,E) == 0) {
                 wyj[i] = wiadomosc[i] ^ 1;
@@ -172,12 +178,8 @@ public class Hamming {
 
         int rozmiar = (wiadomosc.length - 1)/8 + 1;
         int[] wyj;
-        if (wiadomosc.length % 8 == 0) {
-            wyj = new int[rozmiar*8 + rozmiar*H.length];
-        } else{
-            wyj = new int[rozmiar*8 + rozmiar*H.length + 1];
-            wyj[rozmiar*8 + rozmiar*H.length]  = wiadomosc.length%8;
-        }
+        wyj = new int[rozmiar*8 + rozmiar*H.length];
+
 
 
         int[] buffor;
@@ -207,28 +209,19 @@ public class Hamming {
 
         int rozmiar = (wiadomosc.length - 1)/(8+H.length) + 1;
         int[] wyj;
-        boolean nierownosc = wiadomosc.length % (8+H.length) != 0;
-        if(nierownosc){
-            rozmiar -= 1;
-            wyj = new int[rozmiar*8 - wiadomosc[wiadomosc.length - 1]];
 
-        } else {
+
             wyj = new int[rozmiar*8];
-        }
+
 
         int[] buffor;
         int x = 0;
         for (int i = 0; i < rozmiar; i++){
             buffor = Arrays.copyOfRange(wiadomosc,i*(8+H.length),(i+1)*(8+H.length));
             buffor = napraw(buffor);
+            for (int j = 0; j < buffor.length; j++)
+                wyj[x + j] = buffor[j];
 
-            if (!(i == rozmiar - 1 && nierownosc)) {
-                for (int j = 0; j < buffor.length; j++)
-                    wyj[x + j] = buffor[j];
-            } else {
-                for (int j = 0; j < wiadomosc[wiadomosc.length-1]; j++)
-                    wyj[x + j] = buffor[j];
-            }
 
 
                 x+=8;
