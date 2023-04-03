@@ -2,7 +2,6 @@ package org.example;
 
 import java.io.*;
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
 
 public class OperacjePlikowe {
 
