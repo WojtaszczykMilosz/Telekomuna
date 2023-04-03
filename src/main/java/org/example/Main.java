@@ -72,6 +72,7 @@ public class Main {
             System.out.println("0. Wyjscie z programu.");
             wybor = scanner.nextInt();
             scanner.nextLine();
+
             switch (wybor) {
                 case 1 -> {
                     System.out.println("DEMO:");
