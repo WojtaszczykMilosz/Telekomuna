@@ -4,13 +4,6 @@ import java.util.Arrays;
 
 public class Hamming {
 
-//    private static final int[][] H2 = {
-//            {1,1,0,1,1,0,1,0, 1,0,0,0},
-//            {1,0,1,1,0,1,1,0, 0,1,0,0},
-//            {0,1,1,1,0,0,0,1, 0,0,1,0},
-//            {0,0,0,0,1,1,1,1, 0,0,0,1}
-//    };
-
     private static final int[][] H = {
             {1, 1, 1, 1, 0, 0, 0, 0,     1, 0, 0, 0, 0, 0, 0, 0},
             {1, 1, 0, 0, 1, 1, 0, 0,     0, 1, 0, 0, 0, 0, 0, 0},
@@ -32,7 +25,7 @@ public class Hamming {
                     wyn[j] = wyn[j] ^ 1;
 
 
-                    if(Arrays.compare(pop,napraw2(wyn))!=0){
+                    if(Arrays.compare(pop, napraw(wyn))!=0){
                         System.out.println("BŁĄD");
                         System.out.println(i);
                         System.out.println(j);
@@ -132,25 +125,8 @@ public class Hamming {
     }
 
 
+
     public static int[] napraw(int[] wiadomosc) {
-        int[] E = sprawdz(wiadomosc);
-        if (E == null) {
-            return wiadomosc;
-        }
-        int[] wyj = Arrays.copyOf(wiadomosc,H.length);
-        int[] col;
-        for (int i = 0; i < H.length; i++) {
-            col = getColumn(i);
-
-            if (Arrays.compare(col,E) == 0) {
-                wyj[i] = wiadomosc[i] ^ 1;
-            }
-        }
-
-        return wyj;
-    }
-
-    public static int[] napraw2(int[] wiadomosc) {
         int[] E = sprawdz(wiadomosc);
         if (E == null) {
             return wiadomosc;
@@ -242,7 +218,7 @@ public class Hamming {
         int x = 0;
         for (int i = 0; i < rozmiar; i++){
             buffor = Arrays.copyOfRange(wiadomosc,i*(8+H.length),(i+1)*(8+H.length));
-            buffor = napraw2(buffor);
+            buffor = napraw(buffor);
 
             if (!(i == rozmiar - 1 && nierownosc)) {
                 for (int j = 0; j < buffor.length; j++)
