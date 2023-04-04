@@ -146,7 +146,7 @@ public class Hamming {
             buffor = napraw(buffor);
             for (int j = 0; j < buffor.length; j++)
                 wyj[x + j] = buffor[j];
-                x+=8;
+            x+=8;
             }
         return wyj;
     }
