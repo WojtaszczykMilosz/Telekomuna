@@ -1,0 +1,53 @@
+package org.example;
+
+public class Node implements Comparable<Node>{
+    private Node leftNode;
+    private Node rightNode;
+    private int amount;
+    private char character;
+    private boolean isLeaf;
+
+    public Node getLeftNode() {
+        return leftNode;
+    }
+
+    public Node getRightNode() {
+        return rightNode;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public char getCharacter() {
+        return character;
+    }
+
+    public boolean isIsLeaf() {
+        return isLeaf;
+    }
+
+    public Node(Node leftNode, Node rightNode) {
+
+        this.leftNode = leftNode;
+        this.rightNode = rightNode;
+        this.isLeaf = false;
+        this.amount = findAmount();
+
+    }
+    public Node(char character, int amount) {
+
+        this.character = character;
+        this.amount = amount;
+        this.isLeaf = true;
+
+    }
+    public int findAmount() {
+        return leftNode.getAmount() + rightNode.getAmount();
+    }
+
+    @Override
+    public int compareTo(Node o) {
+        return o.getAmount() - getAmount();
+    }
+}
