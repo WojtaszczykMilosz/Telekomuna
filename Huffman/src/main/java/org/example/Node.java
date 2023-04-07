@@ -48,6 +48,6 @@ public class Node implements Comparable<Node>{
 
     @Override
     public int compareTo(Node o) {
-        return o.getAmount() - getAmount();
+        return getAmount() - o.getAmount();
     }
 }
