@@ -31,6 +31,7 @@ public class Main {
                 "matko zwolena, Maryja!\n" +
                 "Zyszczy nam, spuści nam.\n" +
                 "Kyrie eleison.";
+//        String string = "aabbbccccdddddffffff";
         byte[] b = string.getBytes();
 
         Huffman huff = new Huffman();
@@ -47,6 +48,16 @@ public class Main {
 
 
         System.out.println(huff.decode(s));
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        char[] chars2 = huff.saveTree("",huff.root).toCharArray();
+        System.out.println(chars2);
+        Node node4 = huff.readTree(0,chars2);
+
+        Huffman huff4 = new Huffman();
+        huff4.root = node4;
+        System.out.println(huff4.decode(s));
 
 
     }

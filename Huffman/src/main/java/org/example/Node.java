@@ -35,6 +35,11 @@ public class Node implements Comparable<Node>{
         this.amount = findAmount();
 
     }
+    public Node(Node leftNode, Node rightNode, Integer i){
+        this.leftNode = leftNode;
+        this.rightNode = rightNode;
+        this.isLeaf = false;
+    }
     public Node(char character, int amount) {
 
         this.character = character;
@@ -42,8 +47,23 @@ public class Node implements Comparable<Node>{
         this.isLeaf = true;
 
     }
+    public Node(){
+        this.isLeaf = false;
+    }
     public int findAmount() {
         return leftNode.getAmount() + rightNode.getAmount();
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
+    public void setLeftNode(Node leftNode) {
+        this.leftNode = leftNode;
+    }
+
+    public void setRightNode(Node rightNode) {
+        this.rightNode = rightNode;
     }
 
     @Override

@@ -8,6 +8,7 @@ public class Huffman {
     private HashMap<Character,Integer> amountMap = new HashMap<>();
     public HashMap<Character,String> dict = new HashMap<>();
     public Node root;
+    public String treeString;
 
     public void printAmount(){
         System.out.println(amountMap.entrySet());
@@ -74,5 +75,30 @@ public class Huffman {
             }
         }
         return wyj.toString();
+    }
+
+    public String saveTree(String string,Node node) {
+        if(node.isIsLeaf()){
+            string += '1';
+            string += node.getCharacter();
+            return string;
+        }
+
+        string += '0';
+        string = saveTree(string,node.getLeftNode());
+        string = saveTree(string,node.getRightNode());
+        return string;
+    }
+    public Node readTree(Integer i,char[] chars){
+        if(chars[i] == '1') {
+            i++;
+            return new Node(chars[i++],i);
+        }
+        i++;
+        Node node = new Node();
+        node.setLeftNode(readTree(i,chars));
+        node.setRightNode(readTree(node.getLeftNode().getAmount(),chars));
+        node.setAmount(node.getRightNode().getAmount());
+        return node;
     }
 }
