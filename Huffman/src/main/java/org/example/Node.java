@@ -35,11 +35,6 @@ public class Node implements Comparable<Node>{
         this.amount = findAmount();
 
     }
-    public Node(Node leftNode, Node rightNode, Integer i){
-        this.leftNode = leftNode;
-        this.rightNode = rightNode;
-        this.isLeaf = false;
-    }
     public Node(char character, int amount) {
 
         this.character = character;

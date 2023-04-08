@@ -5,60 +5,27 @@ import java.util.PriorityQueue;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Huffman to fajny ziomek");
-//        Node n1 = new Node('a',15);
-//        Node n2 = new Node('b',35);
-//        Node n3 = new Node(n1,n2);
-//        Node n4 = new Node('c',5);
-//        Node n5 = new Node('d',15);
-//        Node n6 = new Node(n4,n5);
-//        Node n7 = new Node(n6,n3);
-//        PriorityQueue<Node> queue = new PriorityQueue<>();
-//        queue.add(n1);
-//        queue.add(n3);
-//        queue.add(n6);
-//        queue.add(n5);
-//        queue.add(n7);
-//        queue.add(n2);
-//        queue.add(n4);
-//        while(!queue.isEmpty()) {
-//            System.out.println(queue.poll().getAmount());
-//        }
-
-        String string = "Bogurodzica dziewica,\n" +
-                "Bogiem sławiena Maryja.\n" +
-                "U twego syna, Gospodzina,\n" +
-                "matko zwolena, Maryja!\n" +
-                "Zyszczy nam, spuści nam.\n" +
-                "Kyrie eleison.";
-//        String string = "aabbbccccdddddffffff";
-        byte[] b = string.getBytes();
-
-        Huffman huff = new Huffman();
-        huff.createAmountMap(string);
-        huff.printAmount();
-        huff.createTree();
-        System.out.println(huff.root.getAmount());
-        huff.createDict("",huff.root);
-        System.out.println(huff.dict.entrySet());
-        String s = huff.code(string);
-        System.out.println(string);
-        System.out.println(s.length());
-        System.out.println(b.length * 8);
-
-
-        System.out.println(huff.decode(s));
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        char[] chars2 = huff.saveTree("",huff.root).toCharArray();
-        System.out.println(chars2);
-        Node node4 = huff.readTree(0,chars2);
-
-        Huffman huff4 = new Huffman();
-        huff4.root = node4;
-        System.out.println(huff4.decode(s));
-
-
+        String string = OperacjePlikowe.wczytajZpliku("/Users/miloszwojtaszczyk/JAVAprojects/Telekomuna/Huffman/test.txt");
+//        System.out.println(string);
+//        System.out.println();
+        Huffman huff = new Huffman(string);
+        huff.codeFromFileToFile("/Users/miloszwojtaszczyk/JAVAprojects/Telekomuna/Huffman/test.txt","/Users/miloszwojtaszczyk/JAVAprojects/Telekomuna/Huffman/codeTest.txt");
+        huff.decodeFromFileToFile("/Users/miloszwojtaszczyk/JAVAprojects/Telekomuna/Huffman/codeTest.txt","/Users/miloszwojtaszczyk/JAVAprojects/Telekomuna/Huffman/test2.txt");
+//        String code = huff.codeEverything(string);
+//        System.out.println(code);
+//        System.out.println(code.toCharArray().length);
+//        char d = 'ś';
+//        Huffman huff2 = new Huffman();
+//        String decode = huff2.decodeEveything(code);
+//        System.out.println();
+//        System.out.println(decode);
+//
+//        OperacjePlikowe.zapiszDoPliku("/Users/miloszwojtaszczyk/JAVAprojects/Telekomuna/Huffman/testCode.txt",code);
+//        String af = OperacjePlikowe.wczytajKodZpliku("/Users/miloszwojtaszczyk/JAVAprojects/Telekomuna/Huffman/testCode.txt");
+//        System.out.println(af.length());
+//        System.out.println(af);
+//        System.out.println(code);
+//        System.out.println(af.equals(code));
+//        System.out.println(new Huffman().decodeEveything(af));
     }
 }
