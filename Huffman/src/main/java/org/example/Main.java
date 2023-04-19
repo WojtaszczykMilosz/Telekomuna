@@ -5,14 +5,15 @@ import java.util.PriorityQueue;
 
 public class Main {
     public static void main(String[] args) {
-        String string = OperacjePlikowe.wczytajZpliku("/Users/miloszwojtaszczyk/JAVAprojects/Telekomuna/Huffman/test.txt");
+        String string = OperacjePlikowe.wczytajZpliku("Huffman/test.txt");
 //        System.out.println(string);
 //        System.out.println();
         Huffman huff = new Huffman(string);
-        huff.codeFromFileToFile("/Users/miloszwojtaszczyk/JAVAprojects/Telekomuna/Huffman/test.txt","/Users/miloszwojtaszczyk/JAVAprojects/Telekomuna/Huffman/codeTest.txt");
-        huff.decodeFromFileToFile("/Users/miloszwojtaszczyk/JAVAprojects/Telekomuna/Huffman/codeTest.txt","/Users/miloszwojtaszczyk/JAVAprojects/Telekomuna/Huffman/test2.txt");
-//        String code = huff.codeEverything(string);
-//        System.out.println(code);
+
+//        huff.codeFromFileToFile("/Users/miloszwojtaszczyk/JAVAprojects/Telekomuna/Huffman/test.txt","/Users/miloszwojtaszczyk/JAVAprojects/Telekomuna/Huffman/codeTest.txt");
+//        huff.decodeFromFileToFile("/Users/miloszwojtaszczyk/JAVAprojects/Telekomuna/Huffman/codeTest.txt","/Users/miloszwojtaszczyk/JAVAprojects/Telekomuna/Huffman/test2.txt");
+        String code = huff.codeEverything(string);
+        System.out.println(code);
 //        System.out.println(code.toCharArray().length);
 //        char d = 'ś';
 //        Huffman huff2 = new Huffman();

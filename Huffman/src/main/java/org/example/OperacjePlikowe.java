@@ -15,6 +15,7 @@ public class OperacjePlikowe {
 
            String str = null;
            StringBuilder s = new StringBuilder();
+
            while ((str = br.readLine()) != null){
                s.append(str);
                s.append('\n');
@@ -84,6 +85,32 @@ public class OperacjePlikowe {
 
         return null;
     }
+
+    public static byte[] wczytajPlik(String plik){
+        try (InputStream sin = new FileInputStream(plik)) {
+
+            long rozmiar = new File(plik).length();
+            byte[] wyj = new byte[(int) rozmiar];
+
+            sin.read(wyj);
+
+            return wyj;
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void zapiszPlik(String plik, byte[] wej){
+        try (OutputStream sou = new FileOutputStream(plik)) {
+            sou.write(wej);
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
 
     public static void zapiszDoPlikuTekst(String plik, String wej){
         BufferedWriter writer = null;
