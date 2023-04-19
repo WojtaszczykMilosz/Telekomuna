@@ -14,7 +14,7 @@ public class Client {
 
     public static void main(String[] args){
         try {
-            Socket sock = new Socket(InetAddress.getLocalHost(),5050);
+            Socket sock = new Socket(Server.getLocalHost(),Server.PORT);
 
             byte[] plik = OperacjePlikowe.wczytajPlik("Huffman\\test.txt");
             DataOutputStream os =new DataOutputStream(sock.getOutputStream());
