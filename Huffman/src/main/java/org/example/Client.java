@@ -85,16 +85,15 @@ public class Client {
             String adres = scanner.next();
             scanner.nextLine();
             SocketInit(adres);
-            SendFileThroughSocket("Hamming\\test.txt");
+            SendFileThroughSocket("Huffman\\codeTest.txt");
             System.out.println("Plik zostal wyslany");
-            scanner.close();
         } catch (IOException e ) {
 
         }
     }
     private static void PrintChoiceMessage(){
         System.out.println("CLIENT - wysyłanie pliku");
-        System.out.println("1. Wyślij plik do servera");
+        System.out.println("1. Wyślij zakodowany plik do servera");
         System.out.println("2. Zakoduj wiadomość");
         System.out.println("3. Dekoduj wiadomość");
         System.out.println("4. Zakoduj plik z wiadomość");

@@ -5,6 +5,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.management.GarbageCollectorMXBean;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -24,8 +25,15 @@ public class Server {
         if (length > 0) {
             byte[] bytes = new byte[length];
             is.readFully(bytes);
-            OperacjePlikowe.zapiszPlik("odebrane.txt",bytes);
+            String plik = "odebrane.txt";
+            OperacjePlikowe.zapiszPlik(plik,bytes);
+            DekodujPlik(plik);
         }
+    }
+
+    private static void DekodujPlik(String sciezkaPliku){
+        Huffman decoder = new Huffman();
+        decoder.decodeFromFileToFile(sciezkaPliku,"brrrr.txt");
     }
 
     public static void main(String[] args) {
