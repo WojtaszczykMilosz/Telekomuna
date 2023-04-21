@@ -35,9 +35,9 @@ public class Server {
 
     private static void DekodujPlik(String sciezkaPliku){
         Huffman decoder = new Huffman();
-        decoder.decodeFromFileToFile(sciezkaPliku,"brrrr.txt");
-        String s = OperacjePlikowe.wczytajZpliku("brrr.txt");
-        System.out.println("Odkodowana wiadomość o długości: " + s.toCharArray().length * 8 + " bajtów");
+        decoder.decodeFromFileToFile(sciezkaPliku,"odkodowane.txt");
+        String s = OperacjePlikowe.wczytajZpliku("odkodowane.txt");
+        System.out.println("Odkodowana wiadomość o długości: " + s.toCharArray().length + " bajtów");
     }
 
     public static void main(String[] args) {
