@@ -22,6 +22,8 @@ public class Client {
         DataOutputStream os =new DataOutputStream(sock.getOutputStream());
         os.writeInt(plik.length);
         os.write(plik);
+        os.close();
+        sock.close();
     }
 
     private static void RunMenu(){
@@ -85,7 +87,11 @@ public class Client {
             String adres = scanner.next();
             scanner.nextLine();
             SocketInit(adres);
-            SendFileThroughSocket("Huffman\\codeTest.txt");
+            String string = OperacjePlikowe.wczytajZpliku("Huffman/test.txt");
+            Huffman huff = new Huffman(string);
+            String code = huff.codeEverything(string);
+            OperacjePlikowe.zapiszDoPliku("Huffman\\kodDoWysłania.txt",code);
+            SendFileThroughSocket("Huffman\\kodDoWysłania.txt");
             System.out.println("Plik zostal wyslany");
         } catch (IOException e ) {
 

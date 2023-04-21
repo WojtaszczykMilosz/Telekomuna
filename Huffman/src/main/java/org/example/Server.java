@@ -1,15 +1,9 @@
 package org.example;
 
-import javax.xml.crypto.Data;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.management.GarbageCollectorMXBean;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class Server {
 
@@ -27,13 +21,23 @@ public class Server {
             is.readFully(bytes);
             String plik = "odebrane.txt";
             OperacjePlikowe.zapiszPlik(plik,bytes);
+            System.out.println("Zakodowany plik o długości: " + length + " bajtów");
+            for(int i = 0;i < length;i++){
+                System.out.print(bytes[i]);
+            }
+            System.out.println();
             DekodujPlik(plik);
+            is.close();
+            sock.close();
+            serverSocket.close();
         }
     }
 
     private static void DekodujPlik(String sciezkaPliku){
         Huffman decoder = new Huffman();
         decoder.decodeFromFileToFile(sciezkaPliku,"brrrr.txt");
+        String s = OperacjePlikowe.wczytajZpliku("brrr.txt");
+        System.out.println("Odkodowana wiadomość o długości: " + s.toCharArray().length * 8 + " bajtów");
     }
 
     public static void main(String[] args) {
@@ -46,9 +50,5 @@ public class Server {
 
         }
 
-    }
-
-    public static InetAddress getLocalHost() throws UnknownHostException {
-        return InetAddress.getLocalHost();
     }
 }
