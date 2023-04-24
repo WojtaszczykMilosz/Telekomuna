@@ -38,12 +38,15 @@ public class Server {
         decoder.decodeFromFileToFile(sciezkaPliku,"odkodowane.txt");
         String s = OperacjePlikowe.wczytajZpliku("odkodowane.txt");
         System.out.println("Odkodowana wiadomość o długości: " + s.toCharArray().length + " bajtów");
+        System.out.println(s);
     }
 
     public static void main(String[] args) {
         try {
             serverSocket = new ServerSocket(PORT);
+            System.out.println("Oczekiwanie na klienta...");
             sock = serverSocket.accept();
+            System.out.println("Nawiązno połączenie");
             is =new DataInputStream(sock.getInputStream());
             OdbierzPlik();
         } catch (IOException e) {
