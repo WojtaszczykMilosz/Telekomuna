@@ -7,7 +7,7 @@ public class Wysylanie {
         SerialPort port = SerialPort.getCommPorts()[2];
         XModem x = new XModem(port);
 
-        x.Wyslij('');
+        x.Wyslij("test.txt");
 
     }
 }
