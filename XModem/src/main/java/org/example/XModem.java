@@ -32,7 +32,7 @@ public class XModem {
     }
 
     private void Break(){
-        System.exit(1);
+        System.exit(21);
     }
 
     public void Odbierz(){
@@ -54,16 +54,25 @@ public class XModem {
         while (true) {
             wiadomosc = Arrays.copyOfRange(wiadomosc,0,iteracja*128);
 
+            if (iloscBledow > MAX_BLEDOW) Break();
+
             port.readBytes(naglowek,1);
             odebranoWiadomosc = true;
             if (naglowek[0] == EOT ) {
                 port.writeBytes(new byte[] {ACK},1);
                 break;
             } else if (naglowek[0] != SOH) {
-                break;
+                iloscBledow++;
+                continue;
             }
 
+
             port.readBytes(naglowek,2);
+
+            if (naglowek[0] != ~naglowek[1]) {
+                iloscBledow++;
+                continue;
+            }
 
             port.readBytes(blok,wielkoscBloku);
             port.readBytes(checkSumRCV,1);
@@ -72,19 +81,30 @@ public class XModem {
 
             if (checkSumCalc != checkSumRCV[0]) {
                 port.writeBytes(new byte[]{NAK},1);
+                iloscBledow++;
                 continue;
             }
 
-
             port.writeBytes(new byte[]{ACK},1);
-
 
             System.arraycopy(blok,0,wiadomosc,iteracja*wielkoscBloku,wielkoscBloku);
             iteracja++;
         }
+        port.writeBytes(new byte[]{ACK},1);
+        port.writeBytes(new byte[]{ACK},1);
+        port.writeBytes(new byte[]{ACK},1);
+
     }
 
-
+    private boolean SprawdzCzyToKoniec(){
+        if (naglowek[0] == EOT ) {
+            port.writeBytes(new byte[] {ACK},1);
+            return true;
+        } else if (naglowek[0] != SOH) {
+            return true;
+        }
+        return false;
+    }
 
     public void Wyslij(String file){
 
@@ -145,7 +165,7 @@ public class XModem {
         int iloscBlokow = (plik.length - 1) / wielkoscBloku + 1;
         byte[][] wyj = new byte[iloscBlokow][];
         for (byte i = 0; i < iloscBlokow; i++) {
-            wyj[i] = Arrays.copyOfRange(plik,0,128);
+            wyj[i] = Arrays.copyOfRange(plik,i,128*i);
         }
 
         return wyj;
@@ -162,7 +182,7 @@ public class XModem {
 
     private void tworzNaglowek(byte i){
         naglowek[1] = i;
-        naglowek[2] = (byte) (255 - i);
+        naglowek[2] = (byte)~i;
     }
 
     private SerialPort port;
