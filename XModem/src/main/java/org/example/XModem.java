@@ -12,63 +12,110 @@ public class XModem {
         this.port = port;
     }
 
+
+    public class Watek extends Thread {
+        private long miliseconds;
+        public Watek(long seconds) {
+            miliseconds = 1000*seconds;
+        }
+
+        public void run() {
+            try {
+                Thread.sleep(miliseconds);
+            } catch ( InterruptedException e ) {
+
+            }
+            if (odebranoWiadomosc)
+                Break();
+        }
+
+    }
+
+    private void Break(){
+        System.exit(1);
+    }
+
     public void Odbierz(){
         byte[] blok = new byte[128];
+        byte[] wiadomosc =  new byte [128];
+
         byte[] checkSumRCV = {0};
         byte checkSumCalc;
 
-        byte[] wiadomosc =  new byte [128];
 
+        iloscBledow = 0;
+        odebranoWiadomosc = false;
 
+        new Watek(timeout).start();
 
         port.writeBytes(new byte[]{NAK},1);
 
-
+        int iteracja = 1;
         while (true) {
+            wiadomosc = Arrays.copyOfRange(wiadomosc,0,iteracja*128);
+
             port.readBytes(naglowek,1);
-            if (naglowek[0] == EOT) {
+            odebranoWiadomosc = true;
+            if (naglowek[0] == EOT ) {
                 port.writeBytes(new byte[] {ACK},1);
                 break;
+            } else if (naglowek[0] != SOH) {
+                break;
             }
+
             port.readBytes(naglowek,2);
 
-            port.readBytes(blok,128);
+            port.readBytes(blok,wielkoscBloku);
             port.readBytes(checkSumRCV,1);
 
-            checkSumCalc = (byte)sumBytes(blok);
+            checkSumCalc = sumBytes(blok);
 
             if (checkSumCalc != checkSumRCV[0]) {
                 port.writeBytes(new byte[]{NAK},1);
                 continue;
             }
+
+
             port.writeBytes(new byte[]{ACK},1);
 
+
+            System.arraycopy(blok,0,wiadomosc,iteracja*wielkoscBloku,wielkoscBloku);
+            iteracja++;
         }
     }
 
 
 
     public void Wyslij(String file){
+
         byte[] plik = OperacjePlikowe.wczytajZpliku(file);
         byte[][] bloki = podzielBajty(plik);
+
         int iloscBlokow = (plik.length - 1) / wielkoscBloku + 1;
 
+        iloscBledow = 0;
+        odebranoWiadomosc = false;
 
-        byte[] odpowiedz = {NAK};
+        new Watek(timeout).start();
+        czekajNaSygnal();
 
+        if (iloscBledow == MAX_BLEDOW) return;
+
+
+        byte[] odpowiedz = {0};
         for (byte i = 1; i <= iloscBlokow; i++) {
 
-            while(odpowiedz[0] != ACK){
-                //preparation
+            while(true) {
                 tworzNaglowek(i);
 
-                //sending
-                wyslijPakiet(naglowek,bloki[i-1]);
+                wyslijPakiet(naglowek, bloki[i - 1]);
 
-                //response
-                port.readBytes(odpowiedz,1);
+                port.readBytes(odpowiedz, 1);
+                if (odpowiedz[0] != ACK)
+                    iloscBledow++;
+                else
+                    break;
             }
-
         }
         odpowiedz[0] = NAK;
         while(odpowiedz[0] != ACK) {
@@ -77,8 +124,17 @@ public class XModem {
         }
     }
 
+    public void czekajNaSygnal(){
+        byte[] odp = {0};
+        while (odp[0] != NAK && iloscBledow < MAX_BLEDOW) {
+            port.readBytes(odp, 1);
+            odebranoWiadomosc = true;
+            iloscBledow++;
+        }
+    }
+
     public void wyslijPakiet(byte[] naglowek,byte[] blok) {
-        byte[] checkSuma = {(byte)sumBytes(blok)};
+        byte[] checkSuma = {sumBytes(blok)};
         port.writeBytes(naglowek,naglowek.length);
         port.writeBytes(blok,wielkoscBloku);
         port.writeBytes(checkSuma,1);
@@ -95,10 +151,10 @@ public class XModem {
         return wyj;
     }
 
-    public int sumBytes(byte[] array) {
-        int result = 0;
+    public byte sumBytes(byte[] array) {
+        byte result = 0;
         for (byte a: array) {
-            result = (( (a&0xFF) + result) % 256);
+            result = (byte)( (a + result) % 256);
 
         }
         return result;
@@ -118,4 +174,9 @@ public class XModem {
     private byte NAK = 0x15;
     private byte CAN = 0x18;
     private byte C = 0x43;
+
+    private boolean odebranoWiadomosc = false;
+    private long timeout = 20;
+    private int iloscBledow = 0;
+    private int MAX_BLEDOW = 15;
 }
