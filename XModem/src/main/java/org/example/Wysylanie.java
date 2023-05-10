@@ -10,7 +10,7 @@ public class Wysylanie {
         XModem x = new XModem(port);
         port.setComPortTimeouts(SerialPort.TIMEOUT_READ_BLOCKING,500,0);
 //        SerialPort.getCommPorts()[1].writeBytes(new byte[]{0x15},1);
-        x.Wyslij("XModem\\kryptu.pdf");
+        x.Wyslij("XModem\\doc.docx");
 //        port.readBytes(b,1);
         port.closePort();
     }
