@@ -55,7 +55,7 @@ public class XModem {
                 System.out.println(naglowek[0]);
                 System.out.println("czemu?");
                 iloscBledow++;
-                continue;
+                Break();
             }
 
             Recv(naglowek, 1, 2);
@@ -134,7 +134,7 @@ public class XModem {
                 Recv(odpowiedz);
                 System.out.print("odebralem odpowiedz - ");
                 System.out.println(odpowiedz[0]);
-                if (odpowiedz[0] != ACK) {
+                if (odpowiedz[0] != ACK && odpowiedz[0] != C) {
                     iloscBledow++;
                     System.out.println("e?");
                 } else
