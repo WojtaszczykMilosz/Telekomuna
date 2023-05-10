@@ -3,21 +3,54 @@ package org.example;
 
 import com.fazecast.jSerialComm.SerialPort;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 
 public class XModem {
 
     XModem(SerialPort port) {
         naglowek[0] = SOH;
+        ustawTryb();
         in = new DataInputStream(port.getInputStream());
         out = new DataOutputStream(port.getOutputStream());
     }
 
+    private void ustawTryb(){
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(System.in));
+        System.out.println("Wybierz");
+        System.out.println("1 - Podstawowa wersja");
+        System.out.println("2 - Wersja crc");
+        try {
+            String wybor = reader.readLine();
+            switch (wybor){
+                case "1":
+                    ustawTrybPodstawowy();
+                    break;
+                case "2":
+                    ustawTrybCRC();
+                    break;
+                default:
+                    ustawTrybPodstawowy();
+            }
+        }
+        catch (IOException e) {
+            ustawTrybPodstawowy();
+        }
+    }
 
 
+    private void ustawTrybPodstawowy(){
+        pierwszyZnak = NAK;
+        naglowek[0] = SOH;
+        checkSum = new byte[1];
+    }
+
+    private void ustawTrybCRC(){
+        pierwszyZnak = C;
+        naglowek[0] = C;
+        checkSum = new byte[2];
+    }
 
     private void Break() {
         System.exit(21);
@@ -27,14 +60,14 @@ public class XModem {
         byte[] blok = new byte[wielkoscBloku];
         byte[] wiadomosc = new byte[wielkoscBloku];
 
-        byte[] checkSumRCV = {0};
+
 
         iloscBledow = 0;
 
+        byte oczekiwanyNaglowek = naglowek[0];
 
-
-        Write(new byte[]{NAK});
-        System.out.println("Wysłano NAK");
+        Write(new byte[]{pierwszyZnak});
+        System.out.println("Wysłano pierwszy znak");
         int iteracja = 1;
         while (true) {
             wiadomosc = Arrays.copyOf(wiadomosc, wielkoscBloku * iteracja);
@@ -50,7 +83,7 @@ public class XModem {
             if (naglowek[0] == EOT) {
                 Write(new byte[]{ACK});
                 break;
-            } else if (naglowek[0] != SOH) {
+            } else if (naglowek[0] != oczekiwanyNaglowek) {
                 System.out.println(naglowek[0]);
                 System.out.println("czemu?");
                 iloscBledow++;
@@ -73,8 +106,8 @@ public class XModem {
             }
             System.out.println();
 
-            Recv(checkSumRCV);
-            if (!checkReceivedCheckSum(checkSumRCV[0],blok)) {
+            Recv(checkSum);
+            if (!checkReceivedCheckSum(blok)) {
                 iloscBledow++;
                 continue;
             }
@@ -90,22 +123,27 @@ public class XModem {
 
         OperacjePlikowe.zapiszDoPliku(plik, wiadomosc);
     }
-    private boolean checkReceivedCheckSum(byte checkSum, byte[] blok){
+
+    private boolean checkReceivedCheckSum(byte[] blok){
 
         byte checkSumCalc ;
 
         System.out.print("checksuma");
-        System.out.println(checkSum);
+//        System.out.println(checkSum);
 
         checkSumCalc = sumBytes(blok);
         System.out.println(checkSumCalc);
-        if (checkSumCalc != checkSum) {
+        if (checkSum.length == 2)
+        //TODO trzeba to crc zrobic i tyle wsm
+        if (checkSumCalc != checkSum[0]) {
             Write(new byte[]{NAK});
             iloscBledow++;
             return false;
         }
         return true;
     }
+
+
 //    private boolean SprawdzCzyToKoniec() {
 //        if (naglowek[0] == EOT) {
 //            port.writeBytes(new byte[]{ACK}, 1);
@@ -125,6 +163,7 @@ public class XModem {
         int iloscBlokow = (plik.length - 1) / wielkoscBloku + 1;
         System.out.println(plik.length);
         iloscBledow = 0;
+
 
         czekajNaSygnal();
 
@@ -162,9 +201,9 @@ public class XModem {
 
     public void czekajNaSygnal() {
         byte[] odp = {0};
-        while (odp[0] != NAK && iloscBledow < MAX_BLEDOW) {
+        while (odp[0] != pierwszyZnak && iloscBledow < MAX_BLEDOW) {
             Recv(odp);
-            iloscBledow ++;
+            iloscBledow++;
             System.out.println("Czekam");
         }
         if (iloscBledow >= MAX_BLEDOW) {
@@ -262,6 +301,8 @@ public class XModem {
     private final byte CAN = 0x18;
     private final byte C = 0x43;
 
+    private byte[] checkSum = {0};
+    private byte pierwszyZnak = NAK;
     private int iloscBledow = 0;
     private final int MAX_BLEDOW = 15;
 }
