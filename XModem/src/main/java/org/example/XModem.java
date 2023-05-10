@@ -109,17 +109,6 @@ public class XModem {
     }
 
 
-//    private boolean SprawdzCzyToKoniec() {
-//        if (naglowek[0] == EOT) {
-//            port.writeBytes(new byte[]{ACK}, 1);
-//            return true;
-//        } else if (naglowek[0] != SOH) {
-//            return true;
-//        }
-//        return false;
-//    }
-
-
     public void Wyslij(String file) {
 
         byte[] plik = OperacjePlikowe.wczytajZpliku(file);
@@ -217,7 +206,7 @@ public class XModem {
         return result;
     }
 
-    private void tworzNaglowek(byte i) {
+    public void tworzNaglowek(byte i) {
         naglowek[0] = SOH;
         naglowek[1] = i;
         naglowek[2] = (byte) ~i;
@@ -263,7 +252,7 @@ public class XModem {
     private final byte EOT = 0x4;
     private final byte ACK = 0x6;
     protected final byte NAK = 0x15;
-    private final byte CAN = 0x18;
+    protected final byte CAN = 0x18;
     protected final byte C = 0x43;
 
     protected byte[] checkSum = {0};

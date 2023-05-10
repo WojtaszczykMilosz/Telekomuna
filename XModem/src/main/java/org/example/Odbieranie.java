@@ -36,6 +36,7 @@ public class Odbieranie {
 
     public static void main(String[] args){
         SerialPort port = SerialPort.getCommPorts()[1];
+        ustawTryb(port);
         port.openPort();
         port.setComPortTimeouts(SerialPort.TIMEOUT_READ_BLOCKING,500,0);
 
