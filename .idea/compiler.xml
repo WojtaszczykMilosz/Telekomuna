@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Huffman" />
         <module name="XModem" />
+        <module name="AC" />
         <module name="Kodowanie" />
       </profile>
     </annotationProcessing>
