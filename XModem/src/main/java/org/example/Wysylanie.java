@@ -3,14 +3,41 @@ package org.example;
 
 import com.fazecast.jSerialComm.SerialPort;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class Wysylanie {
+    static XModem xmodem;
+    private static void ustawTryb(SerialPort port){
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(System.in));
+        System.out.println("Wybierz");
+        System.out.println("1 - Podstawowa wersja");
+        System.out.println("2 - Wersja crc");
+        try {
+            String wybor = reader.readLine();
+            switch (wybor){
+                case "1":
+                    xmodem = new XModem(port);
+                    break;
+                case "2":
+                    xmodem = new XModemCRC(port);
+                    break;
+                default:
+                    xmodem = new XModem(port);
+            }
+        }
+        catch (IOException e) {
+
+        }
+    }
     public static void main(String[] args){
         SerialPort port = SerialPort.getCommPorts()[1];
         port.openPort();
-        XModem x = new XModem(port);
         port.setComPortTimeouts(SerialPort.TIMEOUT_READ_BLOCKING,500,0);
 //        SerialPort.getCommPorts()[1].writeBytes(new byte[]{0x15},1);
-        x.Wyslij("XModem\\doc.docx");
+        xmodem.Wyslij("XModem\\doc.docx");
 //        port.readBytes(b,1);
         port.closePort();
     }

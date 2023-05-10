@@ -10,47 +10,15 @@ public class XModem {
 
     XModem(SerialPort port) {
         naglowek[0] = SOH;
-        ustawTryb();
+//        ustawTryb();
         in = new DataInputStream(port.getInputStream());
         out = new DataOutputStream(port.getOutputStream());
     }
 
-    private void ustawTryb(){
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(System.in));
-        System.out.println("Wybierz");
-        System.out.println("1 - Podstawowa wersja");
-        System.out.println("2 - Wersja crc");
-        try {
-            String wybor = reader.readLine();
-            switch (wybor){
-                case "1":
-                    ustawTrybPodstawowy();
-                    break;
-                case "2":
-                    ustawTrybCRC();
-                    break;
-                default:
-                    ustawTrybPodstawowy();
-            }
-        }
-        catch (IOException e) {
-            ustawTrybPodstawowy();
-        }
-    }
 
 
-    private void ustawTrybPodstawowy(){
-        pierwszyZnak = NAK;
-        naglowek[0] = SOH;
-        checkSum = new byte[1];
-    }
 
-    private void ustawTrybCRC(){
-        pierwszyZnak = C;
-        naglowek[0] = C;
-        checkSum = new byte[2];
-    }
+
 
     private void Break() {
         System.exit(21);
@@ -124,17 +92,14 @@ public class XModem {
         OperacjePlikowe.zapiszDoPliku(plik, wiadomosc);
     }
 
-    private boolean checkReceivedCheckSum(byte[] blok){
+    protected boolean checkReceivedCheckSum(byte[] blok){
 
         byte checkSumCalc ;
 
         System.out.print("checksuma");
-//        System.out.println(checkSum);
 
-        checkSumCalc = sumBytes(blok);
+        checkSumCalc = (byte)sumBytes(blok);
         System.out.println(checkSumCalc);
-        if (checkSum.length == 2)
-        //TODO trzeba to crc zrobic i tyle wsm
         if (checkSumCalc != checkSum[0]) {
             Write(new byte[]{NAK});
             iloscBledow++;
@@ -213,7 +178,7 @@ public class XModem {
     }
 
     public void wyslijPakiet(byte[] blok,int numerBloku) {
-        byte[] checkSuma = {sumBytes(blok)};
+        checkSum[0] = (byte)sumBytes(blok);
         tworzNaglowek((byte)numerBloku);
         Write(naglowek);
         System.out.print("naglowek - ");
@@ -227,9 +192,9 @@ public class XModem {
             System.out.print(i);
         }
         System.out.println();
-        Write(checkSuma);
+        Write(checkSum);
         System.out.print("check sum - ");
-        System.out.println(checkSuma[0]);
+        System.out.println(checkSum[0]);
 
     }
 
@@ -243,7 +208,7 @@ public class XModem {
         return wyj;
     }
 
-    public byte sumBytes(byte[] array) {
+    public int sumBytes(byte[] array) {
         byte result = 0;
         for (byte a : array) {
             result = (byte) ((a + result) % 256);
@@ -259,7 +224,7 @@ public class XModem {
     }
 
 
-    private void Write(byte[] tab) {
+    public void Write(byte[] tab) {
         try {
             out.write(tab);
         } catch (IOException e) {
@@ -267,7 +232,7 @@ public class XModem {
         }
     }
 
-    private void Recv(byte[] tab, int off, int len) {
+    public void Recv(byte[] tab, int off, int len) {
 
         try {
             in.readFully(tab, off, len);
@@ -276,7 +241,7 @@ public class XModem {
         }
     }
 
-    private void Recv(byte[] tab) {
+    public void Recv(byte[] tab) {
         try {
             in.readFully(tab);
         } catch (IOException e) {
@@ -292,17 +257,17 @@ public class XModem {
 
     private final DataOutputStream out;
 
-    private final byte[] naglowek = new byte[3];
+    protected final byte[] naglowek = new byte[3];
     private final int wielkoscBloku = 128;
     private final byte SOH = 0x1;
     private final byte EOT = 0x4;
     private final byte ACK = 0x6;
-    private final byte NAK = 0x15;
+    protected final byte NAK = 0x15;
     private final byte CAN = 0x18;
-    private final byte C = 0x43;
+    protected final byte C = 0x43;
 
-    private byte[] checkSum = {0};
-    private byte pierwszyZnak = NAK;
-    private int iloscBledow = 0;
+    protected byte[] checkSum = {0};
+    protected byte pierwszyZnak = NAK;
+    protected int iloscBledow = 0;
     private final int MAX_BLEDOW = 15;
 }
