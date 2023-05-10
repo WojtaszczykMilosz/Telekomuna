@@ -47,8 +47,6 @@ public class XModem {
         byte[] wiadomosc = new byte[wielkoscBloku];
 
 
-
-
         byte[] checkSumRCV = {0};
         byte checkSumCalc;
 
@@ -57,54 +55,64 @@ public class XModem {
         odebranoWiadomosc = false;
 
 
-
         new Watek(timeout).start();
 
         Write(new byte[]{NAK});
-        System.out.println("Wysłano");
+        System.out.println("Wysłano NAK");
         int iteracja = 1;
         while (true) {
-            resizeArray(wiadomosc);
-
+            wiadomosc = Arrays.copyOf(wiadomosc, wielkoscBloku * iteracja);
             if (iloscBledow > MAX_BLEDOW) {
-                System.out.println(iteracja);
+//                System.out.println(iteracja);
                 Break();
             }
 
             odebranoWiadomosc = true;
-            Recv(naglowek,0,1);
+            Recv(naglowek, 0, 1);
+
+            System.out.print("odebralem naglowek - ");
+            System.out.println(naglowek[0]);
             if (naglowek[0] == EOT) {
                 Write(new byte[]{ACK});
                 break;
             } else if (naglowek[0] != SOH) {
-
+                System.out.println(naglowek[0]);
+                System.out.println("czemu?");
                 iloscBledow++;
                 continue;
             }
 
             Recv(naglowek, 1, 2);
-
+            System.out.print("numer bloku - ");
+            System.out.print(naglowek[1]);
+            System.out.println(naglowek[2]);
             if (naglowek[1] != ~naglowek[2]) {
-                System.out.println("cos nie gra wrr");
                 iloscBledow++;
                 continue;
             }
 
             Recv(blok);
+            System.out.print("blok");
+            for (byte i: blok) {
+                System.out.print(i);
+            }
+            System.out.println();
+
             Recv(checkSumRCV);
+            System.out.print("checksuma");
+            System.out.println(checkSumRCV[0]);
 
             checkSumCalc = sumBytes(blok);
-
+            System.out.println(checkSumCalc);
             if (checkSumCalc != checkSumRCV[0]) {
                 Write(new byte[]{NAK});
                 iloscBledow++;
-                System.out.println("chujek");
                 continue;
             }
 
 
             Write(new byte[]{ACK});
-            System.out.println("ACK PO ODEBRANIU");
+            System.out.println("ACK PO BLOKU");
             System.arraycopy(blok, 0, wiadomosc, (iteracja - 1) * wielkoscBloku, wielkoscBloku);
             iteracja++;
         }
@@ -126,8 +134,8 @@ public class XModem {
 //    }
 
     private void resizeArray(byte[] tab) {
-        byte[] temp = new byte[tab.length+wielkoscBloku];
-        temp = Arrays.copyOfRange(tab,0,tab.length);
+        byte[] temp;
+        temp = Arrays.copyOfRange(tab, 0, tab.length + wielkoscBloku);
         tab = temp;
     }
 
@@ -137,11 +145,8 @@ public class XModem {
         byte[][] bloki = podzielBajty(plik);
 
 
-
-
-
         int iloscBlokow = (plik.length - 1) / wielkoscBloku + 1;
-
+        System.out.println(plik.length);
         iloscBledow = 0;
         odebranoWiadomosc = false;
 
@@ -152,23 +157,28 @@ public class XModem {
 
 
         byte[] odpowiedz = {0};
-        for (byte i = 1; i <= iloscBlokow; i++) {
-
+        for (int i = 1; i <= iloscBlokow; i++) {
+            odpowiedz[0] = NAK;
+            System.out.println("kolejna iteracja");
             while (true) {
-                System.out.println("tworze naglowek");
-                tworzNaglowek(i);
-                System.out.println("stworzony - wysylam pakiet");
+
+                tworzNaglowek((byte)i);
+                System.out.println("stworzony nagglowek - wysylam pakiet");
 
                 wyslijPakiet(naglowek, bloki[i - 1]);
 
                 Recv(odpowiedz);
+                System.out.print("odebralem odpowiedz - ");
+                System.out.println(odpowiedz[0]);
                 if (odpowiedz[0] != ACK) {
                     iloscBledow++;
                     System.out.println("e?");
-                }
-                else
+                } else
                     break;
+
+
             }
+            System.out.println(i);
         }
         System.out.println("PO petli");
         odpowiedz[0] = NAK;
@@ -192,8 +202,20 @@ public class XModem {
     public void wyslijPakiet(byte[] naglowek, byte[] blok) {
         byte[] checkSuma = {sumBytes(blok)};
         Write(naglowek);
+        System.out.print("naglowek - ");
+        for (byte i: naglowek) {
+            System.out.print(i);
+        }
+        System.out.println();
         Write(blok);
+        System.out.print("blok - ");
+        for (byte i: blok) {
+            System.out.print(i);
+        }
+        System.out.println();
         Write(checkSuma);
+        System.out.print("check sum - ");
+        System.out.println(checkSuma[0]);
 
     }
 
@@ -201,9 +223,8 @@ public class XModem {
         int iloscBlokow = (plik.length - 1) / wielkoscBloku + 1;
         byte[][] wyj = new byte[iloscBlokow][wielkoscBloku];
 
-        for (byte i = 0; i < iloscBlokow; i++) {
-            wyj[i] = Arrays.copyOfRange(plik, i, 128 * (i+1));
-
+        for (int i = 0; i < iloscBlokow; i++) {
+            wyj[i] = Arrays.copyOfRange(plik, 128*i, 128 * (i + 1));
         }
         return wyj;
     }
@@ -218,6 +239,7 @@ public class XModem {
     }
 
     private void tworzNaglowek(byte i) {
+        naglowek[0] = SOH;
         naglowek[1] = i;
         naglowek[2] = (byte) ~i;
     }
@@ -235,8 +257,8 @@ public class XModem {
 
         try {
             in.readFully(tab, off, len);
-            System.out.println("2");
         } catch (IOException e) {
+            Arrays.fill(tab, off, len, (byte) 0);
             System.out.println(e.getMessage());
         }
     }
@@ -244,8 +266,8 @@ public class XModem {
     private void Recv(byte[] tab) {
         try {
             in.readFully(tab);
-            System.out.println("1");
         } catch (IOException e) {
+            Arrays.fill(tab, 0, tab.length, (byte) 0);
             System.out.println(e.getMessage());
         }
     }

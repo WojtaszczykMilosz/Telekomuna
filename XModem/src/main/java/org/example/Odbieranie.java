@@ -9,7 +9,7 @@ public class Odbieranie {
         port.openPort();
         port.setComPortTimeouts(SerialPort.TIMEOUT_READ_BLOCKING,500,0);
         XModem x = new XModem(port);
-        x.Odbierz("odebrane.txt");
+        x.Odbierz("odebrane.pdf");
 
         port.closePort();
 
